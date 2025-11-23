@@ -40,7 +40,7 @@ if ($search_query) {
     <link rel="stylesheet" href="/SOCSCI3/assets/css/style.css">
 </head>
 <body>
-    <!-- Updated: Include Sidebar instead of Header -->
+    <?php include 'partials/header.php'; ?>
     <?php include 'partials/sidebar.php'; ?>
 
     <main class="container">

@@ -24,31 +24,30 @@ themeToggle.addEventListener('click', () => {
 
 // Hamburger Menu
 const hamburger = document.getElementById('hamburger');
-const nav = document.getElementById('nav');
+const sidebar = document.getElementById('sidebar');
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    nav.classList.toggle('active');
-});
+if (hamburger && sidebar) {
+    hamburger.addEventListener('click', () => {
+        sidebar.classList.toggle('mobile-active');
+    });
 
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!hamburger.contains(e.target) && !nav.contains(e.target)) {
-        hamburger.classList.remove('active');
-        nav.classList.remove('active');
-    }
-});
-
-// Close mobile menu when clicking on a link
-const navLinks = nav.querySelectorAll('a');
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-            hamburger.classList.remove('active');
-            nav.classList.remove('active');
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!hamburger.contains(e.target) && !sidebar.contains(e.target)) {
+            sidebar.classList.remove('mobile-active');
         }
     });
-});
+
+    // Close mobile menu when clicking on a link
+    const navLinks = sidebar.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('mobile-active');
+            }
+        });
+    });
+}
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -235,9 +234,8 @@ function printSyllabus() {
 // Add keyboard navigation
 document.addEventListener('keydown', (e) => {
     // Escape key closes mobile menu
-    if (e.key === 'Escape') {
-        hamburger.classList.remove('active');
-        nav.classList.remove('active');
+    if (e.key === 'Escape' && sidebar) {
+        sidebar.classList.remove('mobile-active');
     }
 });
 
