@@ -22,14 +22,14 @@
         <a href="?page=lessons" class="btn">View Lessons</a>
     </div>
     <div class="card">
-        <div class="card-icon">📋</div>
+        <div class="card-icon">📜</div>
         <h3>Course Syllabus</h3>
         <p>Detailed course outline, objectives, and grading criteria</p>
         <br>
         <a href="?page=syllabus" class="btn btn-teal">View Syllabus</a>
     </div>
     <div class="card">
-        <div class="card-icon">🌐</div>
+        <div class="card-icon">🌍</div>
         <h3>Global Perspective</h3>
         <p>Understanding diverse cultures and international relations</p>
         <br>
@@ -41,7 +41,7 @@
     <h2 style="text-align: center; color: var(--indigo); margin-bottom: 2rem;">Latest Topics</h2>
     <div class="card-grid">
         <?php 
-        $featured_weeks = [1, 9, 14];
+        $featured_weeks = [2, 8, 16];
         foreach ($featured_weeks as $week_num) {
             if (isset($lessons[$week_num])) {
                 $lesson = $lessons[$week_num];

@@ -1,7 +1,7 @@
 <header>
     <div class="header-container">
         <a href="?page=home" class="logo">
-            <div class="logo-img">🌍</div>
+            <div class="logo-img">🗺️</div>
             <span>SOCSCI 3</span>
         </a>
 
