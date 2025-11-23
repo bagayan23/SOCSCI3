@@ -14,7 +14,9 @@
     <?php
     for ($i = 1; $i <= 17; $i++) {
         $lesson = $lessons[$i];
+        $icon = getIconForLesson($lesson['title'], $lesson['content']);
         echo '<a href="?page=lesson-content&week=' . $i . '" class="lesson-card">';
+        echo '<div class="lesson-icon">' . $icon . '</div>';
         echo '<div class="lesson-number">' . sprintf('%02d', $i) . '</div>';
         echo '<h4>' . $lesson['title'] . '</h4>';
         echo '</a>';
