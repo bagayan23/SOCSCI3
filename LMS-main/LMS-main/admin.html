@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SCOSCI1 LMS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <script>
+        // Check admin authentication
+        async function checkAdminAuth() {
+            try {
+                const response = await fetch('api/check-auth.php');
+                const data = await response.json();
+                if (!data.authenticated || data.role !== 'admin') {
+                    window.location.href = 'login.html';
+                } else {
+                    // Show welcome toast
+                    showWelcomeToast(data.full_name);
+                }
+            } catch (error) {
+                window.location.href = 'login.html';
+            }
+        }
+        checkAdminAuth();
+        
+        // Show welcome toast
+        function showWelcomeToast(name) {
+            const toast = document.createElement('div');
+            toast.className = 'welcome-toast';
+            toast.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>Welcome, ${name}!</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-circle">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>SCOSCI1</h1>
+                    <span>ADMIN PANEL</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="user-menu">
+                    <button class="burger-menu-btn" onclick="toggleBurgerMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="burger-menu" id="burgerMenu">
+                        <div class="burger-menu-header">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Administrator</span>
+                        </div>
+                        <button onclick="showSection('students'); toggleBurgerMenu();" class="burger-menu-item">
+                            <i class="fas fa-users"></i> Students
+                        </button>
+                        <button onclick="showSection('materials'); toggleBurgerMenu();" class="burger-menu-item">
+                            <i class="fas fa-folder-open"></i> Materials
+                        </button>
+                        <a href="index.html" class="burger-menu-item">
+                            <i class="fas fa-home"></i> Homepage
+                        </a>
+                        <button onclick="logout()" class="burger-menu-item logout-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <main class="content">
+
+        <!-- Students Section -->
+        <section id="studentsSection" class="admin-section">
+            <div class="section-title">
+                <h1><i class="fas fa-users"></i> Student Management</h1>
+                <p>View and manage registered students</p>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Students</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-graduate"></i>
+                    <div>
+                        <h3 id="activeUsers">0</h3>
+                        <p>Active Students</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <h3 id="recentUsers">0</h3>
+                        <p>Recent Signups</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="users-section">
+                <div class="section-header">
+                    <h2>Registered Students</h2>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchUsers" class="search-box" placeholder="Search students...">
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Full Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Registered</th>
+                                <th>Last Login</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="7" class="loading-cell">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading students...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Materials Section -->
+        <section id="materialsSection" class="admin-section" style="display: none;">
+            <div class="section-title">
+                <h1><i class="fas fa-folder-open"></i> Materials Management</h1>
+                <p>Upload and manage learning materials</p>
+            </div>
+            
+            <main class="content admin-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="section-header">
+                    <div>
+                        <h2><i class="fas fa-cloud-upload-alt"></i> Upload Learning Material</h2>
+                        <p>Share new materials with your students</p>
+                    </div>
+                </div>
+
+                <div class="upload-card">
+                    <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="materialTitle">
+                                    <i class="fas fa-heading"></i>
+                                    Material Title
+                                </label>
+                                <input type="text" id="materialTitle" name="title" required 
+                                       placeholder="e.g., Lecture 1: Introduction to Contemporary Issues"
+                                       class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="materialType">
+                                    <i class="fas fa-tag"></i>
+                                    Material Type
+                                </label>
+                                <select id="materialType" name="type" required class="form-select">
+                                    <option value="">Select type...</option>
+                                    <option value="Lecture">Lecture</option>
+                                    <option value="PDF">PDF Document</option>
+                                    <option value="Reading">Reading Material</option>
+                                    <option value="Assignment">Assignment</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="materialDescription">
+                                <i class="fas fa-align-left"></i>
+                                Description
+                            </label>
+                            <textarea id="materialDescription" name="description" rows="4" required 
+                                      placeholder="Provide a brief description of the material..."
+                                      class="form-textarea"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="materialFile">
+                                <i class="fas fa-file-upload"></i>
+                                Upload File
+                            </label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="materialFile" name="file" required 
+                                       accept=".pdf,.ppt,.pptx,.doc,.docx" class="file-input">
+                                <div class="file-upload-display">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to browse or drag and drop your file here</p>
+                                    <span>Accepted: PDF, PPT, PPTX, DOC, DOCX (Max 100MB)</span>
+                                </div>
+                            </div>
+                            <div id="fileName" class="file-name"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-upload"></i>
+                            Upload Material
+                        </button>
+                    </form>
+
+                    <div id="uploadStatus" class="upload-status"></div>
+                </div>
+            </section>
+
+            <!-- Materials List Section -->
+            <section class="materials-list-section">
+                <div class="section-header">
+                    <div>
+                        <h2><i class="fas fa-folder-open"></i> Uploaded Materials</h2>
+                        <p>Manage your course materials</p>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs for Admin -->
+                <div class="admin-filter-section">
+                    <div class="admin-filter-header">
+                        <div class="materials-count">
+                            <span id="filteredCount">0</span> of <span id="totalCount">0</span> materials
+                        </div>
+                        <div class="search-container admin-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search materials..." class="search-box" id="adminSearchBox">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">
+                            <i class="fas fa-th"></i>
+                            All Materials
+                        </button>
+                        <button class="filter-tab" data-filter="Lecture">
+                            <i class="fas fa-chalkboard"></i>
+                            Lectures
+                        </button>
+                        <button class="filter-tab" data-filter="PDF">
+                            <i class="fas fa-file-pdf"></i>
+                            Documents
+                        </button>
+                        <button class="filter-tab" data-filter="Reading">
+                            <i class="fas fa-book-reader"></i>
+                            Readings
+                        </button>
+                        <button class="filter-tab" data-filter="Assignment">
+                            <i class="fas fa-pen-square"></i>
+                            Assignments
+                        </button>
+                    </div>
+                </div>
+
+                <div id="adminMaterialsList" class="admin-materials-list">
+                    <!-- Loading state -->
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading materials...</p>
+                    </div>
+                </div>
+            </section>
+            </main>
+        </section>
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Material</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm" class="modal-form">
+                <input type="hidden" id="editMaterialId">
+                
+                <div class="form-group">
+                    <label for="editTitle">
+                        <i class="fas fa-heading"></i>
+                        Material Title
+                    </label>
+                    <input type="text" id="editTitle" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editType">
+                        <i class="fas fa-tag"></i>
+                        Material Type
+                    </label>
+                    <select id="editType" class="form-select" required>
+                        <option value="Lecture">📚 Lecture</option>
+                        <option value="PDF">📄 PDF Document</option>
+                        <option value="Reading">📖 Reading Material</option>
+                        <option value="Assignment">✏️ Assignment</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editDescription">
+                        <i class="fas fa-align-left"></i>
+                        Description
+                    </label>
+                    <textarea id="editDescription" class="form-textarea" rows="4" required></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle burger menu
+        function toggleBurgerMenu() {
+            const menu = document.getElementById('burgerMenu');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+        
+        // Close burger menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('burgerMenu');
+            const btn = document.querySelector('.burger-menu-btn');
+            
+            if (menu && btn && !menu.contains(event.target) && !btn.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Section switching
+        function showSection(section) {
+            document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+            
+            if (section === 'students') {
+                document.getElementById('studentsSection').style.display = 'block';
+                if (allUsers.length === 0) {
+                    loadUsers();
+                }
+            } else if (section === 'materials') {
+                document.getElementById('materialsSection').style.display = 'block';
+            }
+        }
+        
+        // Load students on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+        });
+        
+        // Logout function
+        async function logout() {
+            try {
+                await fetch('api/logout.php');
+                window.location.href = 'index.html';
+            } catch (error) {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Load users for students section
+        let allUsers = [];
+        
+        async function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading-cell"><i class="fas fa-spinner fa-spin"></i> Loading students...</td></tr>';
+            
+            try {
+                const response = await fetch('api/get-users.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allUsers = data.users;
+                    updateStats(data.stats);
+                    displayUsers(allUsers);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">Failed to load students</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">Error loading students. Please refresh.</td></tr>';
+            }
+        }
+        
+        function updateStats(stats) {
+            document.getElementById('totalUsers').textContent = stats.total || 0;
+            document.getElementById('activeUsers').textContent = stats.active || 0;
+            document.getElementById('recentUsers').textContent = stats.recent || 0;
+        }
+        
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No students registered yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.full_name}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${formatDate(user.created_at)}</td>
+                    <td>${user.last_login ? formatDate(user.last_login) : 'Never'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchUsers');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filtered = allUsers.filter(user => 
+                        user.full_name.toLowerCase().includes(searchTerm) ||
+                        user.username.toLowerCase().includes(searchTerm) ||
+                        user.email.toLowerCase().includes(searchTerm)
+                    );
+                    displayUsers(filtered);
+                });
+            }
+        });
+    </script>
+    <script src="admin-script.js"></script>
+</body>
+</html>

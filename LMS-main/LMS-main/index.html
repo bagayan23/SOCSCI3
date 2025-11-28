@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCOSCI1 Learning Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-circle">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>SCOSCI1</h1>
+                    <span>CONTEMPORARY ISSUES</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search materials..." class="search-box" id="searchBox">
+                </div>
+                <div class="user-menu" id="userMenu">
+                    <a href="login.html" class="btn btn-primary btn-small">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="welcome-badge">
+                        <i class="fas fa-star"></i>
+                        <span>Welcome to Contemporary Issues</span>
+                    </div>
+                    <h2>Learning Materials</h2>
+                    <p>Access and download all your course materials. Browse lectures, presentations, and documents uploaded by your professors.</p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-file-alt"></i>
+                            <div>
+                                <h3 id="totalMaterials">0</h3>
+                                <p>Available Materials</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-book"></i>
+                        <span>Lectures</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Documents</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-file-powerpoint"></i>
+                        <span>Presentations</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Tabs -->
+            <section class="filter-section" id="materials">
+                <div class="filter-header">
+                    <h3>Available Learning Materials</h3>
+                    <button class="btn btn-download-all" onclick="downloadAll()">
+                        <i class="fas fa-download"></i>
+                        Download All
+                    </button>
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">
+                        <i class="fas fa-th"></i>
+                        All Materials
+                    </button>
+                    <button class="filter-tab" data-filter="Lecture">
+                        <i class="fas fa-chalkboard"></i>
+                        Lectures
+                    </button>
+                    <button class="filter-tab" data-filter="PDF">
+                        <i class="fas fa-file-pdf"></i>
+                        Documents
+                    </button>
+                    <button class="filter-tab" data-filter="Reading">
+                        <i class="fas fa-book-reader"></i>
+                        Readings
+                    </button>
+                     <button class="filter-tab" data-filter="Assignment">
+                        <i class="fas fa-trowel-bricks"></i>
+                        Assignment
+                    </button>
+                </div>
+            </section>
+
+            <!-- Materials Grid -->
+            <section class="materials-section">
+                <div id="materials-grid" class="materials-grid">
+                    <!-- Loading state -->
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading materials...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section - Only visible when not logged in -->
+            <section class="features-section" id="featuresSection">
+                <h2 class="section-heading">Why Choose SCOSCI1 LMS?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </div>
+                        <h3>Easy Access</h3>
+                        <p>Download all your course materials anytime, anywhere with just one click.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Always Updated</h3>
+                        <p>Get instant access to the latest lectures and materials uploaded by professors.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Smart Search</h3>
+                        <p>Quickly find the materials you need with our powerful search functionality.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure & Reliable</h3>
+                        <p>Your data is protected with industry-standard security measures.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section - Only visible when not logged in -->
+            <section class="about-section" id="aboutSection">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>About Contemporary Issues</h2>
+                        <p>SCOSCI1 Contemporary Issues is a comprehensive course designed to explore current global challenges and their impact on society. Our learning management system provides students with easy access to all course materials, ensuring you never miss important updates.</p>
+                        <p>Stay connected with your studies through our organized platform that brings together lectures, readings, assignments, and more in one convenient location.</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <h3>Active Students</h3>
+                            <p>Join our growing community</p>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-book-open"></i>
+                            <h3>Quality Content</h3>
+                            <p>Curated learning materials</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        </main>
+    </div>
+
+    <!-- Footer - Only visible when not logged in -->
+    <footer class="footer" id="footerSection">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-circle">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h3>SCOSCI1</h3>
+                            <span>CONTEMPORARY ISSUES</span>
+                        </div>
+                    </div>
+                    <p>Learning Management System for Contemporary Issues course</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>For support and inquiries</p>
+                    <p>Email: support@scosci1.edu</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SCOSCI1 LMS. All rights reserved.</p>
+            </div>
+        </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
